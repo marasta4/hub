@@ -21,14 +21,18 @@
     --font-main: 'Inter', sans-serif;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html { font-size: 16px; }
 
   body {
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-main);
     min-height: 100vh;
-    padding: 24px;
+    padding: 16px;
+    padding-bottom: 32px;
+    -webkit-font-smoothing: antialiased;
   }
 
   /* ── HEADER ── */
@@ -36,49 +40,66 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 32px;
-    padding-bottom: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
     border-bottom: 1px solid var(--border);
+    gap: 8px;
   }
 
-  .header-left { display: flex; align-items: center; gap: 14px; }
+  .header-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
 
   .logo {
-    width: 40px; height: 40px;
+    width: 36px; height: 36px;
+    min-width: 36px;
     background: linear-gradient(135deg, var(--accent), #0099cc);
     border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .header h1 {
     font-family: var(--font-mono);
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     color: var(--accent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .header p {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--muted);
     font-family: var(--font-mono);
     margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
   }
 
   .status-pill {
-    display: flex; align-items: center; gap: 6px;
+    display: flex; align-items: center; gap: 5px;
     background: rgba(0,212,170,0.1);
     border: 1px solid rgba(0,212,170,0.3);
     border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 11px;
+    padding: 5px 10px;
+    font-size: 10px;
     font-family: var(--font-mono);
     color: var(--accent);
+    white-space: nowrap;
   }
 
   .status-dot {
-    width: 7px; height: 7px;
+    width: 6px; height: 6px;
+    min-width: 6px;
     background: var(--accent);
     border-radius: 50%;
     animation: pulse 2s infinite;
@@ -89,24 +110,19 @@
     50%       { opacity: 0.3; }
   }
 
-  /* ── GRID ── */
+  /* ── GRID KPI — 2x2 su mobile ── */
   .grid-4 {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
   }
 
   .grid-2 {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  @media (max-width: 900px) {
-    .grid-4 { grid-template-columns: repeat(2, 1fr); }
-    .grid-2  { grid-template-columns: 1fr; }
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
   }
 
   /* ── CARD ── */
@@ -114,21 +130,21 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 20px;
+    padding: 14px;
   }
 
   .card-label {
-    font-size: 10px;
+    font-size: 9px;
     font-family: var(--font-mono);
     color: var(--muted);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   .card-value {
     font-family: var(--font-mono);
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 700;
     color: var(--text);
     line-height: 1;
@@ -138,20 +154,21 @@
   .card-value.red   { color: var(--red); }
 
   .card-sub {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--muted);
-    margin-top: 6px;
+    margin-top: 5px;
     font-family: var(--font-mono);
+    word-break: break-word;
   }
 
   /* ── SEZIONE TITOLO ── */
   .section-title {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 10px;
     color: var(--muted);
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -164,27 +181,58 @@
     background: var(--border);
   }
 
-  /* ── POSIZIONI ── */
-  .position-row {
-    display: grid;
-    grid-template-columns: 100px 1fr 1fr 1fr 110px;
-    gap: 12px;
-    align-items: center;
-    padding: 14px 16px;
-    border-radius: 8px;
+  /* ── POSIZIONI — card verticale su mobile ── */
+  .position-card {
     background: rgba(255,255,255,0.02);
     border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
     margin-bottom: 8px;
-    transition: border-color 0.2s;
   }
 
-  .position-row:hover { border-color: var(--accent); }
+  .position-card:active { border-color: var(--accent); }
+
+  .position-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
 
   .position-ticker {
     font-family: var(--font-mono);
     font-weight: 700;
-    font-size: 14px;
+    font-size: 16px;
     color: var(--accent);
+  }
+
+  .pnl-badge {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .pnl-badge.pos { background: rgba(0,212,170,0.12); color: var(--green); }
+  .pnl-badge.neg { background: rgba(255,69,96,0.12);  color: var(--red); }
+
+  .position-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .position-item {}
+
+  .position-label {
+    font-size: 9px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
   }
 
   .position-val {
@@ -193,40 +241,57 @@
     color: var(--text);
   }
 
-  .position-label {
-    font-size: 10px;
-    color: var(--muted);
-    font-family: var(--font-mono);
+  /* ── LOG — card verticale su mobile ── */
+  .log-card {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
   }
 
-  .pnl-badge {
+  .log-card:last-child { border-bottom: none; }
+
+  .log-card:active { background: rgba(255,255,255,0.03); }
+
+  .log-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .log-ticker {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+  }
+
+  .log-pnl {
     font-family: var(--font-mono);
     font-size: 13px;
     font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 6px;
-    text-align: center;
   }
 
-  .pnl-badge.pos { background: rgba(0,212,170,0.12); color: var(--green); }
-  .pnl-badge.neg { background: rgba(255,69,96,0.12);  color: var(--red); }
+  .log-pnl.pos     { color: var(--green); }
+  .log-pnl.neg     { color: var(--red); }
+  .log-pnl.neutral { color: var(--muted); }
 
-  /* ── LOG ── */
-  .log-row {
-    display: grid;
-    grid-template-columns: 140px 70px 90px 80px 1fr;
-    gap: 10px;
+  .log-bottom {
+    display: flex;
     align-items: center;
-    padding: 10px 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    transition: background 0.15s;
+    gap: 8px;
   }
 
-  .log-row:hover { background: rgba(255,255,255,0.03); }
+  .log-time {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
 
-  .log-row:last-child { border-bottom: none; }
+  .log-asset {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
 
   .badge {
     display: inline-block;
@@ -240,50 +305,55 @@
   .badge.buy  { background: rgba(0,212,170,0.15); color: var(--green); }
   .badge.sell { background: rgba(255,69,96,0.15);  color: var(--red); }
 
-  .log-pnl.pos { color: var(--green); }
-  .log-pnl.neg { color: var(--red); }
-  .log-pnl.neutral { color: var(--muted); }
-
   /* ── EMPTY STATE ── */
   .empty {
     text-align: center;
-    padding: 40px;
+    padding: 32px 20px;
     color: var(--muted);
     font-family: var(--font-mono);
     font-size: 12px;
   }
 
-  /* ── REFRESH BTN ── */
+  /* ── BOTTONI ── */
   .refresh-btn {
     background: rgba(0,212,170,0.1);
     border: 1px solid rgba(0,212,170,0.3);
     color: var(--accent);
     font-family: var(--font-mono);
     font-size: 11px;
-    padding: 6px 14px;
-    border-radius: 6px;
+    padding: 7px 12px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
+    white-space: nowrap;
+    -webkit-appearance: none;
   }
 
-  .refresh-btn:hover {
-    background: rgba(0,212,170,0.2);
-  }
+  .refresh-btn:active { background: rgba(0,212,170,0.2); }
 
-  .last-update {
+  .export-btn {
+    background: rgba(245,166,35,0.1);
+    border: 1px solid rgba(245,166,35,0.4);
+    color: #f5a623;
     font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--muted);
-    margin-top: 6px;
+    font-size: 11px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    -webkit-appearance: none;
   }
+
+  .export-btn:active { background: rgba(245,166,35,0.2); }
 
   /* ── CONFIG BANNER ── */
   .config-banner {
     background: rgba(245,166,35,0.08);
     border: 1px solid rgba(245,166,35,0.3);
-    border-radius: 8px;
-    padding: 14px 18px;
-    margin-bottom: 24px;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 16px;
     font-family: var(--font-mono);
     font-size: 12px;
     color: var(--yellow);
@@ -297,29 +367,33 @@
     border: 1px solid var(--border);
     color: var(--text);
     font-family: var(--font-mono);
-    font-size: 12px;
-    padding: 8px 12px;
-    border-radius: 6px;
+    font-size: 14px;
+    padding: 10px 12px;
+    border-radius: 8px;
     width: 100%;
     margin-top: 10px;
     outline: none;
+    -webkit-appearance: none;
   }
 
   .config-input:focus { border-color: var(--accent); }
 
   .save-btn {
-    margin-top: 8px;
+    margin-top: 10px;
     background: var(--accent);
     color: #000;
     border: none;
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
-    padding: 7px 16px;
-    border-radius: 6px;
+    padding: 10px 20px;
+    border-radius: 8px;
     cursor: pointer;
+    width: 100%;
+    -webkit-appearance: none;
   }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -332,6 +406,7 @@
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:10px;">
+    <button class="export-btn" onclick="exportExcel()">⬇ Esporta Excel</button>
     <button class="refresh-btn" onclick="loadData()">⟳ Aggiorna</button>
     <div class="status-pill"><div class="status-dot"></div> ONLINE</div>
   </div>
@@ -448,31 +523,40 @@
         posContainer.innerHTML = '<div class="empty">Nessuna posizione aperta</div>';
       } else {
         posContainer.innerHTML = positions.map(p => `
-          <div class="position-row">
-            <div>
+          <div class="position-card">
+            <div class="position-header">
               <div class="position-ticker">${p.symbol}</div>
+              <div class="pnl-badge ${p.unrealized_pl >= 0 ? 'pos' : 'neg'}">
+                ${p.unrealized_pl >= 0 ? '+' : ''}${p.unrealized_pl.toFixed(2)}$
+                <span style="font-size:10px;display:block">${fmtPct(p.unrealized_plpc)}</span>
+              </div>
             </div>
-            <div>
-              <div class="position-label">Entrata</div>
-              <div class="position-val">${fmt(p.entry_price)}</div>
-            </div>
-            <div>
-              <div class="position-label">Prezzo attuale</div>
-              <div class="position-val">${fmt(p.current_price)}</div>
-            </div>
-            <div>
-              <div class="position-label">Valore</div>
-              <div class="position-val">${fmt(p.market_value)}</div>
-            </div>
-            <div class="pnl-badge ${p.unrealized_pl >= 0 ? 'pos' : 'neg'}">
-              ${p.unrealized_pl >= 0 ? '+' : ''}${p.unrealized_pl.toFixed(2)}$<br>
-              <span style="font-size:10px">${fmtPct(p.unrealized_plpc)}</span>
+            <div class="position-grid">
+              <div class="position-item">
+                <div class="position-label">Entrata</div>
+                <div class="position-val">${fmt(p.entry_price)}</div>
+              </div>
+              <div class="position-item">
+                <div class="position-label">Prezzo attuale</div>
+                <div class="position-val">${fmt(p.current_price)}</div>
+              </div>
+              <div class="position-item">
+                <div class="position-label">Quantità</div>
+                <div class="position-val">${p.qty.toFixed(4)}</div>
+              </div>
+              <div class="position-item">
+                <div class="position-label">Valore</div>
+                <div class="position-val">${fmt(p.market_value)}</div>
+              </div>
             </div>
           </div>
         `).join('');
       }
 
       // Log segnali
+      window._lastLog       = data.log || [];
+      window._lastPositions = data.positions || [];
+      window._lastAccount   = data.account || {};
       const log = (data.log || []).slice().reverse();
 
       // Statistiche trade chiusi
@@ -489,15 +573,7 @@
         logContainer.innerHTML = '<div class="empty">Nessun segnale ricevuto</div>';
       } else {
         // Header
-        logContainer.innerHTML = `
-          <div class="log-row" style="color:var(--muted);font-size:10px;padding-bottom:8px;">
-            <span>DATA / ORA</span>
-            <span>AZIONE</span>
-            <span>TICKER</span>
-            <span>ASSET</span>
-            <span>P&L</span>
-          </div>
-        ` + log.map(t => {
+        logContainer.innerHTML = log.map(t => {
           let pnlStr = '—';
           let pnlClass = 'neutral';
           if (t.pnl !== undefined) {
@@ -506,12 +582,19 @@
             pnlClass = t.pnl >= 0 ? 'pos' : 'neg';
           }
           return `
-            <div class="log-row">
-              <span style="color:var(--muted)">${fmtTime(t.time)}</span>
-              <span><span class="badge ${t.action.toLowerCase()}">${t.action}</span></span>
-              <span style="color:var(--accent);font-weight:600">${t.ticker}</span>
-              <span style="color:var(--muted)">${t.asset}</span>
-              <span class="log-pnl ${pnlClass}">${pnlStr}</span>
+            <div class="log-card">
+              <div class="log-top">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="badge ${t.action.toLowerCase()}">${t.action}</span>
+                  <span class="log-ticker">${t.ticker}</span>
+                </div>
+                <span class="log-pnl ${pnlClass}">${pnlStr}</span>
+              </div>
+              <div class="log-bottom">
+                <span class="log-time">${fmtTime(t.time)}</span>
+                <span style="color:var(--border)">·</span>
+                <span class="log-asset">${t.asset}</span>
+              </div>
             </div>
           `;
         }).join('');
@@ -521,6 +604,99 @@
       console.error('Errore fetch:', e);
       document.getElementById('last-update').textContent = '⚠️ Impossibile raggiungere il bot — verifica l\'URL';
     }
+  }
+
+
+  function exportExcel() {
+    if (!window._lastLog || window._lastLog.length === 0) {
+      alert('Nessun dato da esportare — aspetta il primo segnale.');
+      return;
+    }
+
+    const wb = XLSX.utils.book_new();
+
+    // ── FOGLIO 1: LOG SEGNALI ──
+    const logData = [
+      ['Data/Ora', 'Azione', 'Ticker', 'Asset', 'Budget ($)', 'P&L ($)', 'Rendimento (%)', 'Eseguito su Alpaca']
+    ];
+    window._lastLog.forEach(t => {
+      logData.push([
+        t.time ? new Date(t.time).toLocaleString('it-IT') : '',
+        t.action || '',
+        t.ticker || '',
+        t.asset  || '',
+        t.budget || '',
+        t.pnl    !== undefined ? parseFloat(t.pnl.toFixed(2))  : '',
+        t.pct    !== undefined ? parseFloat(t.pct.toFixed(2))  : '',
+        t.alpaca_ok ? 'Sì' : 'No'
+      ]);
+    });
+
+    const ws1 = XLSX.utils.aoa_to_sheet(logData);
+
+    // Larghezze colonne
+    ws1['!cols'] = [
+      {wch: 20}, {wch: 8}, {wch: 10}, {wch: 10},
+      {wch: 12}, {wch: 10}, {wch: 16}, {wch: 18}
+    ];
+
+    XLSX.utils.book_append_sheet(wb, ws1, 'Segnali');
+
+    // ── FOGLIO 2: POSIZIONI APERTE ──
+    const posData = [
+      ['Ticker', 'Prezzo Entrata ($)', 'Prezzo Attuale ($)', 'Quantità', 'Valore Mercato ($)', 'P&L Non Realizzato ($)', 'Rendimento (%)']
+    ];
+    (window._lastPositions || []).forEach(p => {
+      posData.push([
+        p.symbol,
+        parseFloat(p.entry_price.toFixed(4)),
+        parseFloat(p.current_price.toFixed(4)),
+        parseFloat(p.qty.toFixed(6)),
+        parseFloat(p.market_value.toFixed(2)),
+        parseFloat(p.unrealized_pl.toFixed(2)),
+        parseFloat(p.unrealized_plpc.toFixed(2))
+      ]);
+    });
+
+    const ws2 = XLSX.utils.aoa_to_sheet(posData);
+    ws2['!cols'] = [
+      {wch: 10}, {wch: 18}, {wch: 18}, {wch: 12},
+      {wch: 18}, {wch: 22}, {wch: 14}
+    ];
+    XLSX.utils.book_append_sheet(wb, ws2, 'Posizioni Aperte');
+
+    // ── FOGLIO 3: RIEPILOGO ──
+    const sells   = (window._lastLog || []).filter(t => t.action === 'SELL');
+    const wins    = sells.filter(t => (t.pnl || 0) > 0);
+    const losses  = sells.filter(t => (t.pnl || 0) <= 0);
+    const pnlTot  = sells.reduce((s, t) => s + (t.pnl || 0), 0);
+    const winRate = sells.length > 0 ? (wins.length / sells.length * 100) : 0;
+    const account = window._lastAccount || {};
+
+    const riepData = [
+      ['RIEPILOGO PORTAFOGLIO', ''],
+      ['Generato il', new Date().toLocaleString('it-IT')],
+      ['', ''],
+      ['CONTO ALPACA', ''],
+      ['Equity Totale ($)', account.equity  || ''],
+      ['Liquidità ($)',     account.cash    || ''],
+      ['Buying Power ($)',  account.buying_power || ''],
+      ['', ''],
+      ['STATISTICHE TRADE', ''],
+      ['Trade Chiusi Totali', sells.length],
+      ['Trade Vincenti',      wins.length],
+      ['Trade Perdenti',      losses.length],
+      ['Win Rate (%)',        parseFloat(winRate.toFixed(1))],
+      ['P&L Totale ($)',      parseFloat(pnlTot.toFixed(2))],
+    ];
+
+    const ws3 = XLSX.utils.aoa_to_sheet(riepData);
+    ws3['!cols'] = [{wch: 25}, {wch: 20}];
+    XLSX.utils.book_append_sheet(wb, ws3, 'Riepilogo');
+
+    // Download
+    const date = new Date().toISOString().slice(0,10);
+    XLSX.writeFile(wb, `trading_report_${date}.xlsx`);
   }
 
   // Carica subito e ogni 30 secondi
