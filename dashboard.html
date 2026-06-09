@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trading Engine — Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg:        #080c12;
+    --surface:   #0d1420;
+    --border:    #1a2535;
+    --accent:    #00d4aa;
+    --red:       #ff4560;
+    --yellow:    #f5a623;
+    --text:      #e2e8f0;
+    --muted:     #4a5568;
+    --green:     #00d4aa;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-main: 'Inter', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-main);
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-left { display: flex; align-items: center; gap: 14px; }
+
+  .logo {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--accent), #0099cc);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  .header h1 {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+  }
+
+  .header p {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    margin-top: 2px;
+  }
+
+  .status-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(0,212,170,0.1);
+    border: 1px solid rgba(0,212,170,0.3);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--accent);
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+
+  /* ── GRID ── */
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 900px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-2  { grid-template-columns: 1fr; }
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .card-label {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .card-value {
+    font-family: var(--font-mono);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .card-value.green { color: var(--green); }
+  .card-value.red   { color: var(--red); }
+
+  .card-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-family: var(--font-mono);
+  }
+
+  /* ── SEZIONE TITOLO ── */
+  .section-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── POSIZIONI ── */
+  .position-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 1fr 1fr 110px;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    transition: border-color 0.2s;
+  }
+
+  .position-row:hover { border-color: var(--accent); }
+
+  .position-ticker {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+  }
+
+  .position-val {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .position-label {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+
+  .pnl-badge {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    text-align: center;
+  }
+
+  .pnl-badge.pos { background: rgba(0,212,170,0.12); color: var(--green); }
+  .pnl-badge.neg { background: rgba(255,69,96,0.12);  color: var(--red); }
+
+  /* ── LOG ── */
+  .log-row {
+    display: grid;
+    grid-template-columns: 140px 70px 90px 80px 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    transition: background 0.15s;
+  }
+
+  .log-row:hover { background: rgba(255,255,255,0.03); }
+
+  .log-row:last-child { border-bottom: none; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .badge.buy  { background: rgba(0,212,170,0.15); color: var(--green); }
+  .badge.sell { background: rgba(255,69,96,0.15);  color: var(--red); }
+
+  .log-pnl.pos { color: var(--green); }
+  .log-pnl.neg { color: var(--red); }
+  .log-pnl.neutral { color: var(--muted); }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  /* ── REFRESH BTN ── */
+  .refresh-btn {
+    background: rgba(0,212,170,0.1);
+    border: 1px solid rgba(0,212,170,0.3);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .refresh-btn:hover {
+    background: rgba(0,212,170,0.2);
+  }
+
+  .last-update {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* ── CONFIG BANNER ── */
+  .config-banner {
+    background: rgba(245,166,35,0.08);
+    border: 1px solid rgba(245,166,35,0.3);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--yellow);
+    display: none;
+  }
+
+  .config-banner.show { display: block; }
+
+  .config-input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    width: 100%;
+    margin-top: 10px;
+    outline: none;
+  }
+
+  .config-input:focus { border-color: var(--accent); }
+
+  .save-btn {
+    margin-top: 8px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 7px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo">🚀</div>
+    <div>
+      <h1>MASTER TRADING ENGINE</h1>
+      <p id="last-update">Caricamento...</p>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="refresh-btn" onclick="loadData()">⟳ Aggiorna</button>
+    <div class="status-pill"><div class="status-dot"></div> ONLINE</div>
+  </div>
+</div>
+
+<!-- CONFIG BANNER -->
+<div class="config-banner show" id="config-banner">
+  ⚙️ Inserisci l'URL del tuo bot su Render per collegare la dashboard.
+  <input class="config-input" id="bot-url" placeholder="https://tuo-servizio.onrender.com" />
+  <button class="save-btn" onclick="saveUrl()">Salva e Connetti</button>
+</div>
+
+<!-- KPI -->
+<div class="grid-4">
+  <div class="card">
+    <div class="card-label">Equity Totale</div>
+    <div class="card-value" id="equity">—</div>
+    <div class="card-sub" id="buying-power">Buying power: —</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Liquidità</div>
+    <div class="card-value" id="cash">—</div>
+    <div class="card-sub">Disponibile</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Posizioni Aperte</div>
+    <div class="card-value" id="pos-count">—</div>
+    <div class="card-sub" id="pos-pnl">P&L non realizzato: —</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Trade Chiusi (sessione)</div>
+    <div class="card-value" id="trades-count">—</div>
+    <div class="card-sub" id="win-rate">Win rate: —</div>
+  </div>
+</div>
+
+<!-- POSIZIONI APERTE -->
+<div class="section-title">Posizioni Aperte</div>
+<div class="card" style="margin-bottom:24px;">
+  <div id="positions-container">
+    <div class="empty">Nessuna posizione aperta</div>
+  </div>
+</div>
+
+<!-- LOG SEGNALI -->
+<div class="section-title">Ultimi Segnali</div>
+<div class="card">
+  <div id="log-container">
+    <div class="empty">Nessun segnale ricevuto</div>
+  </div>
+</div>
+
+<script>
+  let BOT_URL = localStorage.getItem('bot_url') || '';
+
+  if (BOT_URL) {
+    document.getElementById('config-banner').classList.remove('show');
+    document.getElementById('bot-url').value = BOT_URL;
+  }
+
+  function saveUrl() {
+    const val = document.getElementById('bot-url').value.trim().replace(/\/$/, '');
+    if (!val) return;
+    BOT_URL = val;
+    localStorage.setItem('bot_url', BOT_URL);
+    document.getElementById('config-banner').classList.remove('show');
+    loadData();
+  }
+
+  function fmt(n) {
+    return n === null || n === undefined ? '—' : '$' + parseFloat(n).toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  }
+
+  function fmtPct(n) {
+    const v = parseFloat(n);
+    return (v >= 0 ? '+' : '') + v.toFixed(2) + '%';
+  }
+
+  function fmtTime(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleDateString('it-IT') + ' ' + d.toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit'});
+  }
+
+  async function loadData() {
+    if (!BOT_URL) return;
+
+    try {
+      const res  = await fetch(BOT_URL + '/api/status');
+      const data = await res.json();
+
+      // Timestamp
+      document.getElementById('last-update').textContent = 'Aggiornato: ' + fmtTime(data.timestamp);
+
+      // Account
+      if (data.account) {
+        const a = data.account;
+        document.getElementById('equity').textContent       = fmt(a.equity);
+        document.getElementById('cash').textContent         = fmt(a.cash);
+        document.getElementById('buying-power').textContent = 'Buying power: ' + fmt(a.buying_power);
+      }
+
+      // Posizioni
+      const positions = data.positions || [];
+      document.getElementById('pos-count').textContent = positions.length;
+
+      const totalPnl = positions.reduce((s, p) => s + p.unrealized_pl, 0);
+      const pnlEl    = document.getElementById('pos-pnl');
+      pnlEl.textContent = 'P&L non realizzato: ' + (totalPnl >= 0 ? '+' : '') + totalPnl.toFixed(2) + '$';
+      pnlEl.style.color = totalPnl >= 0 ? 'var(--green)' : 'var(--red)';
+
+      const posContainer = document.getElementById('positions-container');
+      if (positions.length === 0) {
+        posContainer.innerHTML = '<div class="empty">Nessuna posizione aperta</div>';
+      } else {
+        posContainer.innerHTML = positions.map(p => `
+          <div class="position-row">
+            <div>
+              <div class="position-ticker">${p.symbol}</div>
+            </div>
+            <div>
+              <div class="position-label">Entrata</div>
+              <div class="position-val">${fmt(p.entry_price)}</div>
+            </div>
+            <div>
+              <div class="position-label">Prezzo attuale</div>
+              <div class="position-val">${fmt(p.current_price)}</div>
+            </div>
+            <div>
+              <div class="position-label">Valore</div>
+              <div class="position-val">${fmt(p.market_value)}</div>
+            </div>
+            <div class="pnl-badge ${p.unrealized_pl >= 0 ? 'pos' : 'neg'}">
+              ${p.unrealized_pl >= 0 ? '+' : ''}${p.unrealized_pl.toFixed(2)}$<br>
+              <span style="font-size:10px">${fmtPct(p.unrealized_plpc)}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Log segnali
+      const log = (data.log || []).slice().reverse();
+
+      // Statistiche trade chiusi
+      const sells    = log.filter(t => t.action === 'SELL');
+      const wins     = sells.filter(t => (t.pnl || 0) > 0);
+      document.getElementById('trades-count').textContent = sells.length;
+      const wrEl = document.getElementById('win-rate');
+      wrEl.textContent = sells.length > 0
+        ? 'Win rate: ' + (wins.length / sells.length * 100).toFixed(0) + '%  (' + wins.length + '/' + sells.length + ')'
+        : 'Win rate: —';
+
+      const logContainer = document.getElementById('log-container');
+      if (log.length === 0) {
+        logContainer.innerHTML = '<div class="empty">Nessun segnale ricevuto</div>';
+      } else {
+        // Header
+        logContainer.innerHTML = `
+          <div class="log-row" style="color:var(--muted);font-size:10px;padding-bottom:8px;">
+            <span>DATA / ORA</span>
+            <span>AZIONE</span>
+            <span>TICKER</span>
+            <span>ASSET</span>
+            <span>P&L</span>
+          </div>
+        ` + log.map(t => {
+          let pnlStr = '—';
+          let pnlClass = 'neutral';
+          if (t.pnl !== undefined) {
+            const s = t.pnl >= 0 ? '+' : '';
+            pnlStr  = s + t.pnl.toFixed(2) + '$ (' + s + t.pct.toFixed(2) + '%)';
+            pnlClass = t.pnl >= 0 ? 'pos' : 'neg';
+          }
+          return `
+            <div class="log-row">
+              <span style="color:var(--muted)">${fmtTime(t.time)}</span>
+              <span><span class="badge ${t.action.toLowerCase()}">${t.action}</span></span>
+              <span style="color:var(--accent);font-weight:600">${t.ticker}</span>
+              <span style="color:var(--muted)">${t.asset}</span>
+              <span class="log-pnl ${pnlClass}">${pnlStr}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+    } catch (e) {
+      console.error('Errore fetch:', e);
+      document.getElementById('last-update').textContent = '⚠️ Impossibile raggiungere il bot — verifica l\'URL';
+    }
+  }
+
+  // Carica subito e ogni 30 secondi
+  loadData();
+  setInterval(loadData, 30000);
+</script>
+</body>
+</html>
