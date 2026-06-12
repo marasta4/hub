@@ -38,15 +38,15 @@
   /* ── HEADER ── */
   .header {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: stretch;
     margin-bottom: 20px;
     padding-bottom: 16px;
     border-bottom: 1px solid var(--border);
-    gap: 8px;
+    gap: 12px;
   }
 
-  .header-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+  .header-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
 
   .logo {
     width: 36px; height: 36px;
@@ -81,8 +81,9 @@
   .header-actions {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 6px;
-    flex-shrink: 0;
+    width: 100%;
   }
 
   .status-pill {
@@ -405,10 +406,12 @@
       <p id="last-update">Caricamento...</p>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <button class="export-btn" onclick="exportExcel()">⬇ Esporta Excel</button>
-    <button class="refresh-btn" onclick="loadData()">⟳ Aggiorna</button>
+  <div class="header-actions">
     <div class="status-pill"><div class="status-dot"></div> ONLINE</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="export-btn" onclick="exportExcel()">⬇ Excel</button>
+      <button class="refresh-btn" onclick="loadData()">⟳ Aggiorna</button>
+    </div>
   </div>
 </div>
 
@@ -701,7 +704,20 @@
 
   // Carica subito e ogni 30 secondi
   loadData();
-  setInterval(loadData, 30000);
+  let refreshInterval = setInterval(loadData, 30000);
+
+  // Quando la pagina torna visibile (iPhone: sblocco schermo, cambio app)
+  // ricarica subito i dati e riavvia l'intervallo
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      loadData();
+      clearInterval(refreshInterval);
+      refreshInterval = setInterval(loadData, 30000);
+    }
+  });
+
+  // Ricarica anche al focus della finestra (alcuni browser iOS)
+  window.addEventListener('focus', loadData);
 </script>
 </body>
 </html>
