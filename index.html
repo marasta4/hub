@@ -594,7 +594,7 @@
                 <span class="log-pnl ${pnlClass}">${pnlStr}</span>
               </div>
               <div class="log-bottom">
-                <span class="log-time">${fmtTime(t.time)}</span>
+                <span class="log-time">${fmtTime(t.created_at || t.time)}</span>
                 <span style="color:var(--border)">·</span>
                 <span class="log-asset">${t.asset}</span>
               </div>
@@ -624,7 +624,7 @@
     ];
     window._lastLog.forEach(t => {
       logData.push([
-        t.time ? new Date(t.time).toLocaleString('it-IT') : '',
+        (t.created_at || t.time) ? new Date(t.created_at || t.time).toLocaleString('it-IT') : '',
         t.action || '',
         t.ticker || '',
         t.asset  || '',
